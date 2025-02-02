@@ -29,10 +29,7 @@ func API(w http.ResponseWriter, r *http.Request) {
 	originsList := strings.Split(allowedOrigins, ",")
 
 	// Connect to MongoDB
-	if err := db.ConnectDB(); err != nil {
-		http.Error(w, "Database connection failed", http.StatusInternalServerError)
-		return
-	}
+	db.ConnectDB()
 
 	// Create a new ServeMux
 	mux := http.NewServeMux()
@@ -44,11 +41,11 @@ func API(w http.ResponseWriter, r *http.Request) {
 	})
 
 	// Routes for registration and login
-	mux.HandleFunc("/register", handlers.RegisterHandler)
-	mux.HandleFunc("/login", handlers.LoginHandler)
+	mux.HandleFunc("/api/register", handlers.RegisterHandler)
+	mux.HandleFunc("/api/login", handlers.LoginHandler)
 
 	// Add the CryptoHandler with JWT verification middleware
-	mux.HandleFunc("/crypto", middleware.VerifyToken(handlers.CryptoHandler))
+	mux.HandleFunc("/api/crypto", middleware.VerifyToken(handlers.CryptoHandler))
 
 	// CORS middleware
 	corsHandler := cors.New(cors.Options{
@@ -60,6 +57,11 @@ func API(w http.ResponseWriter, r *http.Request) {
 
 	// Serve the request
 	corsHandler.ServeHTTP(w, r)
+}
+
+// Handler is required for Vercel
+func Handler(w http.ResponseWriter, r *http.Request) {
+	API(w, r)
 }
 
 // For local development
