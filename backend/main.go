@@ -1,7 +1,6 @@
-package main
+package handler // Change this from "main" to "handler"
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -29,7 +28,10 @@ func API(w http.ResponseWriter, r *http.Request) {
 	originsList := strings.Split(allowedOrigins, ",")
 
 	// Connect to MongoDB
-	db.ConnectDB()
+	if err := db.ConnectDB(); err != nil {
+		http.Error(w, "Database connection failed: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// Create a new ServeMux
 	mux := http.NewServeMux()
@@ -62,20 +64,4 @@ func API(w http.ResponseWriter, r *http.Request) {
 // Handler is required for Vercel
 func Handler(w http.ResponseWriter, r *http.Request) {
 	API(w, r)
-}
-
-// For local development
-func main() {
-	// Set default port
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-
-	// Create a handler
-	handler := http.HandlerFunc(API)
-
-	// Start server
-	fmt.Println("Server is running on port", port)
-	log.Fatal(http.ListenAndServe(":"+port, handler))
 }

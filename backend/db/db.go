@@ -13,37 +13,34 @@ import (
 
 var Client *mongo.Client
 
-// ConnectDB connects to MongoDB
-func ConnectDB() {
-	// Get MongoDB URI from environment variables
-	mongoURI := os.Getenv("MONGODB_URI")
-	if mongoURI == "" {
-		log.Fatal("MONGODB_URI not found in .env file")
+// ConnectDB connects to MongoDB and returns an error if the connection fails
+func ConnectDB() error {
+	// Set MongoDB connection URI
+	uri := os.Getenv("MONGODB_URI")
+	if uri == "" {
+		return fmt.Errorf("MONGODB_URI environment variable not set")
 	}
 
 	// Set client options
-	clientOptions := options.Client().ApplyURI(mongoURI)
+	clientOptions := options.Client().ApplyURI(uri)
 
 	// Connect to MongoDB
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var err error
-	Client, err = mongo.Connect(ctx, clientOptions)
+	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("failed to connect to MongoDB: %v", err)
 	}
 
-	// Check the connection
-	err = Client.Ping(ctx, nil)
+	// Ping the database to verify the connection
+	err = client.Ping(ctx, nil)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("failed to ping MongoDB: %v", err)
 	}
 
-	fmt.Println("Connected to MongoDB!")
-}
-
-// GetDB returns a database instance
-func GetDB() *mongo.Database {
-	return Client.Database("cryptoplace")
+	// Set the global Client variable
+	Client = client
+	log.Println("Connected to MongoDB!")
+	return nil
 }
