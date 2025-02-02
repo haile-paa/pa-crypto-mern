@@ -11,9 +11,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var Client *mongo.Client
+var client *mongo.Client
 
-// ConnectDB connects to MongoDB and returns an error if the connection fails
+// ConnectDB connects to MongoDB and initializes the client
 func ConnectDB() error {
 	// Set MongoDB connection URI
 	uri := os.Getenv("MONGODB_URI")
@@ -28,7 +28,8 @@ func ConnectDB() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	client, err := mongo.Connect(ctx, clientOptions)
+	var err error
+	client, err = mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		return fmt.Errorf("failed to connect to MongoDB: %v", err)
 	}
@@ -39,8 +40,14 @@ func ConnectDB() error {
 		return fmt.Errorf("failed to ping MongoDB: %v", err)
 	}
 
-	// Set the global Client variable
-	Client = client
 	log.Println("Connected to MongoDB!")
 	return nil
+}
+
+// GetDB returns the MongoDB client
+func GetDB() *mongo.Client {
+	if client == nil {
+		log.Fatal("MongoDB client is not initialized. Call ConnectDB() first.")
+	}
+	return client
 }

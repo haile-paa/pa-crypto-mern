@@ -18,7 +18,7 @@ type User struct {
 // FindUserByEmail checks if a user exists in the database
 func FindUserByEmail(email string) (*User, error) {
 	var user User
-	collection := db.GetDB().Collection("users")
+	collection := db.GetDB().Database("your-database-name").Collection("users")
 	filter := bson.M{"email": email}
 	err := collection.FindOne(context.TODO(), filter).Decode(&user)
 	return &user, err
@@ -26,7 +26,7 @@ func FindUserByEmail(email string) (*User, error) {
 
 // InsertUser inserts a new user into the database
 func InsertUser(user User) error {
-	collection := db.GetDB().Collection("users")
+	collection := db.GetDB().Database("your-database-name").Collection("users")
 	_, err := collection.InsertOne(context.TODO(), user)
 	return err
 }

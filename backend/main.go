@@ -1,4 +1,4 @@
-package handler // Change this from "main" to "handler"
+package handler
 
 import (
 	"log"
