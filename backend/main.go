@@ -18,6 +18,12 @@ import (
 func HandleRequest(w http.ResponseWriter, r *http.Request) {
 	mux := http.NewServeMux()
 
+	// Health check route
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("API working"))
+	})
+
 	// Routes for registration and login
 	mux.HandleFunc("/register", handlers.RegisterHandler)
 	mux.HandleFunc("/login", handlers.LoginHandler)
