@@ -8,6 +8,7 @@ require (
 	github.com/rs/cors v1.11.1
 	go.mongodb.org/mongo-driver v1.17.2
 	golang.org/x/crypto v0.32.0
+	golang.org/x/net v0.21.0
 )
 
 require (
