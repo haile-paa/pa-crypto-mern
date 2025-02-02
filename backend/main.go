@@ -9,26 +9,9 @@ import (
 
 	"github.com/haile-paa/Pa-Crypto-Market-Place/db"
 	"github.com/haile-paa/Pa-Crypto-Market-Place/handlers"
-	"github.com/haile-paa/Pa-Crypto-Market-Place/middleware"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 )
-
-// HandleRequest is the exported function Vercel requires
-func HandleRequest(w http.ResponseWriter, r *http.Request) {
-	// Create a new ServeMux
-	mux := http.NewServeMux()
-
-	// Routes for registration and login
-	mux.HandleFunc("/register", handlers.RegisterHandler)
-	mux.HandleFunc("/login", handlers.LoginHandler)
-
-	// Add the CryptoHandler with JWT verification middleware
-	mux.HandleFunc("/crypto", middleware.VerifyToken(handlers.CryptoHandler))
-
-	// Serve HTTP requests
-	mux.ServeHTTP(w, r)
-}
 
 func main() {
 	// Load environment variables
@@ -58,7 +41,7 @@ func main() {
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		AllowCredentials: true,
-	}).Handler(http.HandlerFunc(HandleRequest))
+	}).Handler(http.HandlerFunc(handlers.HandleRequest))
 
 	// Start the server
 	fmt.Println("Server is running on port", port)
