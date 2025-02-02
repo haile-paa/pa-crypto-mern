@@ -14,7 +14,7 @@ import (
 	"github.com/rs/cors"
 )
 
-// HandleRequest is required for Vercel
+// HandleRequest is the main handler for Vercel
 func HandleRequest(w http.ResponseWriter, r *http.Request) {
 	mux := http.NewServeMux()
 
@@ -29,16 +29,11 @@ func HandleRequest(w http.ResponseWriter, r *http.Request) {
 	mux.ServeHTTP(w, r)
 }
 
-func main() {
+// Handler is required for Vercel
+func Handler(w http.ResponseWriter, r *http.Request) {
 	// Load environment variables
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
-	}
-
-	// Set default port
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
 	}
 
 	// Set allowed origins
@@ -59,7 +54,18 @@ func main() {
 		AllowCredentials: true,
 	}).Handler(http.HandlerFunc(HandleRequest))
 
+	// Serve the request
+	handler.ServeHTTP(w, r)
+}
+
+func main() {
+	// Set default port
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	// Start server
 	fmt.Println("Server is running on port", port)
-	log.Fatal(http.ListenAndServe(":"+port, handler))
+	log.Fatal(http.ListenAndServe(":"+port, http.HandlerFunc(Handler)))
 }
