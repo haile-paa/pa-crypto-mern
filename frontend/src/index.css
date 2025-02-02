@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Prata&display=swap");
+
+@import "tailwindcss";
+
+/* Universal box-sizing reset */
+* {
+  box-sizing: border-box;
+  font-family: "Outfit", serif;
+}
+
+/* Reset margin and padding for body and html */
+html,
+body {
+  padding: 0;
+  margin: 0;
+  height: auto; /* Remove fixed height, let it grow with content */
+}
+
+/* Style for links */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Custom .app styles */
+.app {
+  min-height: 100vh;
+  color: white;
+}
+
+/* Prevent interfering with Tailwind's utility classes */
+
