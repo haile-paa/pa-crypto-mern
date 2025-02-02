@@ -14,8 +14,27 @@ import (
 	"github.com/rs/cors"
 )
 
-// HandleRequest is the main handler for Vercel
-func HandleRequest(w http.ResponseWriter, r *http.Request) {
+// API is the main handler for Vercel serverless functions
+func API(w http.ResponseWriter, r *http.Request) {
+	// Load environment variables (only in local development)
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found or error loading .env file")
+	}
+
+	// Set allowed origins
+	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
+	if allowedOrigins == "" {
+		allowedOrigins = "http://localhost:5173"
+	}
+	originsList := strings.Split(allowedOrigins, ",")
+
+	// Connect to MongoDB
+	if err := db.ConnectDB(); err != nil {
+		http.Error(w, "Database connection failed", http.StatusInternalServerError)
+		return
+	}
+
+	// Create a new ServeMux
 	mux := http.NewServeMux()
 
 	// Health check route
@@ -31,39 +50,19 @@ func HandleRequest(w http.ResponseWriter, r *http.Request) {
 	// Add the CryptoHandler with JWT verification middleware
 	mux.HandleFunc("/crypto", middleware.VerifyToken(handlers.CryptoHandler))
 
-	// Serve HTTP requests
-	mux.ServeHTTP(w, r)
-}
-
-// Handler is required for Vercel
-func Handler(w http.ResponseWriter, r *http.Request) {
-	// Load environment variables
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	// Set allowed origins
-	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
-	if allowedOrigins == "" {
-		allowedOrigins = "http://localhost:5173"
-	}
-	originsList := strings.Split(allowedOrigins, ",")
-
-	// Connect to MongoDB
-	db.ConnectDB()
-
 	// CORS middleware
-	handler := cors.New(cors.Options{
+	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   originsList,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		AllowCredentials: true,
-	}).Handler(http.HandlerFunc(HandleRequest))
+	}).Handler(mux)
 
 	// Serve the request
-	handler.ServeHTTP(w, r)
+	corsHandler.ServeHTTP(w, r)
 }
 
+// For local development
 func main() {
 	// Set default port
 	port := os.Getenv("PORT")
@@ -71,7 +70,10 @@ func main() {
 		port = "8080"
 	}
 
+	// Create a handler
+	handler := http.HandlerFunc(API)
+
 	// Start server
 	fmt.Println("Server is running on port", port)
-	log.Fatal(http.ListenAndServe(":"+port, http.HandlerFunc(Handler)))
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
