@@ -25,6 +25,7 @@ const App = () => {
         loop
         muted
         className='absolute top-0 left-0 w-full h-full object-cover z-0'
+        style={{ minWidth: "100%", minHeight: "100%" }}
       >
         <source src={video} type='video/mp4' />
         Your browser does not support the video tag.
