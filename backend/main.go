@@ -42,7 +42,7 @@ func main() {
 
 	// Enable CORS for frontend requests
 	handler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173"}, // Adjust as needed
+		AllowedOrigins:   []string{"http://localhost:5173", "https://pa-crypto.vercel.app"}, // Adjust as needed
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		AllowCredentials: true,
