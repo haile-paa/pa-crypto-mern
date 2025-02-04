@@ -15,10 +15,8 @@ import (
 
 func main() {
 	// Load environment variables from .env file
-	if os.Getenv("RAILWAY_ENVIRONMENT") == "" {
-		if err := godotenv.Load(); err != nil {
-			log.Println("No .env file found, using Railway environment variables")
-		}
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file")
 	}
 
 	// Get PORT from environment variable or use default
