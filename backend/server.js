@@ -1,19 +1,17 @@
-// server.js
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const { connectDB } = require("./db/db.js");
+const { connectDB } = require("../db/db.js");
 const {
   registerHandler,
   loginHandler,
   cryptoHandler,
-} = require("./handlers/handlers.js");
-const { verifyToken } = require("./middleware/middleware.js");
+} = require("../handlers/handlers.js");
+const { verifyToken } = require("../middleware/middleware.js");
 
 dotenv.config(); // Load environment variables
 
 const app = express();
-const port = process.env.PORT || 8080;
 
 // Middleware to parse JSON
 app.use(express.json());
@@ -36,7 +34,5 @@ app.post("/register", registerHandler);
 app.post("/login", loginHandler);
 app.get("/crypto", verifyToken, cryptoHandler);
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+// Vercel serverless function exports
+module.exports = app;
