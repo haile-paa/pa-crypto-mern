@@ -6,12 +6,12 @@ import Navbar from "./components/Navbar";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import CoinDetail from "./pages/CoinDetail";
-
-import video from "./assets/68189-525363710.mp4";
 import Features from "./pages/Features";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
 import Footer from "./components/Footer";
+
+import video from "./assets/68189-525363710.mp4";
 
 const App = () => {
   return (
@@ -19,20 +19,20 @@ const App = () => {
       {/* Toast Notifications */}
       <ToastContainer position='top-right' autoClose={3000} />
 
-      {/* Video Background */}
+      {/* Video Background for larger screens */}
       <video
         autoPlay
         loop
         muted
-        className='absolute top-0 left-0 w-full h-full object-cover z-0'
+        className='absolute top-0 left-0 w-full h-full object-cover z-0 hidden sm:block'
         style={{ minWidth: "100%", minHeight: "100%" }}
       >
         <source src={video} type='video/mp4' />
         Your browser does not support the video tag.
       </video>
 
-      {/* Dark Overlay */}
-      <div className='absolute top-0 left-0 w-full h-full bg-black/50 z-10'></div>
+      {/* Black Background for small screens */}
+      <div className='absolute top-0 left-0 w-full h-full bg-black sm:hidden z-10'></div>
 
       {/* Navbar and Routes */}
       <div className='relative z-20'>

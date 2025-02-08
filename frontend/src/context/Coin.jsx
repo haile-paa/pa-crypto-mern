@@ -59,15 +59,6 @@ const Coin = ({ searchQuery }) => {
   if (error) {
     return (
       <div className='text-center text-white p-8 bg-gray-800 rounded-lg shadow-lg max-w-2xl mx-auto mt-10'>
-        <h1 className='text-3xl font-bold mb-4'>🚨 Error</h1>
-        <p className='text-lg text-gray-300 mb-6'>{error}</p>
-      </div>
-    );
-  }
-
-  if (!cryptoData.length) {
-    return (
-      <div className='text-center text-white p-8 bg-gray-800 rounded-lg shadow-lg max-w-2xl mx-auto mt-10'>
         <h1 className='text-3xl font-bold mb-4'>🚀 Explore Cryptocurrencies</h1>
         <p className='text-lg text-gray-300 mb-6'>
           To view real-time cryptocurrency data, please log in or create an
