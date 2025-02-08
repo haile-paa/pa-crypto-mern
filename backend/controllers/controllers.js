@@ -1,7 +1,7 @@
 // controllers/controllers.js
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/users.js");
+const User = require("./models/users.js");
 const axios = require("axios");
 
 // Register a new user

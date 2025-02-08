@@ -3,7 +3,7 @@ const {
   registerUser,
   loginUser,
   getCryptoData,
-} = require("../controllers/controllers.js");
+} = require("./controllers/controllers.js");
 
 const registerHandler = (req, res) => {
   registerUser(req, res);

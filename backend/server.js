@@ -6,8 +6,8 @@ const {
   registerHandler,
   loginHandler,
   cryptoHandler,
-} = require("../handlers/handlers.js");
-const { verifyToken } = require("../middleware/middleware.js");
+} = require("./handlers/handlers.js");
+const { verifyToken } = require("./middleware/middleware.js");
 
 dotenv.config(); // Load environment variables
 
@@ -35,4 +35,6 @@ app.post("/login", loginHandler);
 app.get("/crypto", verifyToken, cryptoHandler);
 
 // Vercel serverless function exports
-module.exports = app;
+app.get("/", (req, res) => {
+  res.send("API Working");
+});
