@@ -1,5 +1,4 @@
-// models/crypto.js
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const cryptoSchema = new mongoose.Schema({
   id: { type: String, required: true },
@@ -13,4 +12,4 @@ const cryptoSchema = new mongoose.Schema({
 
 const Crypto = mongoose.model("Crypto", cryptoSchema);
 
-module.exports = Crypto;
+export default Crypto;

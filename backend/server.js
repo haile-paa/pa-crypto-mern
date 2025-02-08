@@ -1,25 +1,20 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const { connectDB } = require("./db/db.js");
-const {
-  registerHandler,
-  loginHandler,
-  cryptoHandler,
-} = require("./handlers/handlers.js");
-const { verifyToken } = require("./middleware/middleware.js");
+import express from "express";
+import cors from "cors";
+import "dotenv/config";
+import { connectDB } from "./db/db.js";
+import { verifyToken } from "./middleware/middleware.js";
+import userRouter from "./routes/userRoute.js";
+import cryptoRouter from "./routes/cryptoRoute.js";
 
-dotenv.config(); // Load environment variables
-
+// App config
 const app = express();
-
-// Middleware to parse JSON
-app.use(express.json());
+const port = process.env.PORT || 4000;
 
 // Connect to MongoDB
 connectDB();
 
-// Enable CORS
+// Middlewares
+app.use(express.json());
 app.use(
   cors({
     origin: ["http://localhost:5173", "https://pa-crypto.vercel.app"],
@@ -29,12 +24,17 @@ app.use(
   })
 );
 
-// Routes
-app.post("/register", registerHandler);
-app.post("/login", loginHandler);
-app.get("/crypto", verifyToken, cryptoHandler);
+// API endpoints
+app.use("/user", userRouter);
+app.use("/crypto", verifyToken, cryptoRouter);
 
-// Vercel serverless function exports
+// Root route
 app.get("/", (req, res) => {
   res.send("API Working");
 });
+
+// Start server
+app.listen(port, () => console.log(`Server started on PORT: ${port}`));
+
+// Export for Vercel
+export default app;
