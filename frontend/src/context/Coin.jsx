@@ -8,6 +8,7 @@ const Coin = ({ searchQuery }) => {
   const [cryptoData, setCryptoData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currency, setCurrency] = useState("USD");
+  const [error, setError] = useState(null); // Added error state
 
   const conversionRates = {
     USD: 1,
@@ -19,11 +20,19 @@ const Coin = ({ searchQuery }) => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token available");
+        }
+
         const response = await fetch(`${backendUrl}/crypto`, {
           headers: {
-            Authorization: token ? `Bearer ${token}` : "",
+            Authorization: `Bearer ${token}`,
           },
         });
+
+        if (!response.ok) {
+          throw new Error("Unauthorized or failed request");
+        }
 
         const data = await response.json();
         if (Array.isArray(data)) {
@@ -35,6 +44,7 @@ const Coin = ({ searchQuery }) => {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setError(error.message); // Set the error state
         setLoading(false);
       }
     };
@@ -44,6 +54,15 @@ const Coin = ({ searchQuery }) => {
 
   if (loading) {
     return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return (
+      <div className='text-center text-white p-8 bg-gray-800 rounded-lg shadow-lg max-w-2xl mx-auto mt-10'>
+        <h1 className='text-3xl font-bold mb-4'>🚨 Error</h1>
+        <p className='text-lg text-gray-300 mb-6'>{error}</p>
+      </div>
+    );
   }
 
   if (!cryptoData.length) {

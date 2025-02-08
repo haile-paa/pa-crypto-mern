@@ -25,7 +25,7 @@ const SignUpModal = ({ onClose, onLoginSuccess }) => {
     const user = { username, email, password };
 
     try {
-      const response = await fetch(`${backendUrl}/register`, {
+      const response = await fetch(`${backendUrl}/user/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,7 +40,7 @@ const SignUpModal = ({ onClose, onLoginSuccess }) => {
         resetForm(); // Reset form fields
 
         // Automatically log in the user after signup
-        const loginResponse = await fetch(`${backendUrl}/login`, {
+        const loginResponse = await fetch(`${backendUrl}/user/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -74,7 +74,7 @@ const SignUpModal = ({ onClose, onLoginSuccess }) => {
     const user = { email, password };
 
     try {
-      const response = await fetch(`${backendUrl}/login`, {
+      const response = await fetch(`${backendUrl}/user/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
