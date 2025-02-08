@@ -19,22 +19,32 @@ const Coin = ({ searchQuery }) => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
+        console.log("Token:", token); // Debugging step
+
         const response = await fetch(`${backendUrl}/crypto`, {
           headers: {
             Authorization: token ? `Bearer ${token}` : "",
           },
         });
 
+        console.log("Response status:", response.status);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Error: ${response.status} - ${errorText}`);
+        }
+
         const data = await response.json();
+        console.log("Fetched data:", data);
+
         if (Array.isArray(data)) {
           setCryptoData(data);
         } else {
           console.error("Expected an array, but got:", data);
         }
-
-        setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error.message);
+      } finally {
         setLoading(false);
       }
     };
@@ -67,7 +77,6 @@ const Coin = ({ searchQuery }) => {
 
   return (
     <div className='px-4 sm:px-8 lg:px-16 py-6'>
-      {/* Currency Selector */}
       <div className='flex justify-end mb-4'>
         <label className='text-white mr-2'>Currency:</label>
         <select
@@ -81,7 +90,6 @@ const Coin = ({ searchQuery }) => {
         </select>
       </div>
 
-      {/* Cryptocurrencies List */}
       {filteredData.map((crypto, index) => (
         <Link
           to={`/coin/${crypto.id}`}
